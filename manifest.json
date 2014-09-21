@@ -8,5 +8,8 @@
       "matches": ["http://quizlet.com/*"],
       "js": ["jquery-2.1.1.min.js", "injected.js"]
     }
+  ],
+  "permissions": [
+    "https://quizlet.com/*" // For autocomplete.
   ]
 }

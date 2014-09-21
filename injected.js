@@ -20,20 +20,24 @@ var getDefinitions = function(word, onSuccess) {
 
 var onGetDefinitionsSuccess = function(
     definitions,
+    textSizerElement,
     definitionElement,
     autocompleteGhostTextElement) {
 
   if (definitions.length) {
     // TODO: Show relevant results.
-    // TODO: Expand both textareas to fit ghost text.
     // TODO: Make ghost text persist upon saving.
     var enteredText = definitionElement.val();
-    autocompleteGhostTextElement.val(enteredText + definitions[0].substr(enteredText.length));
+    var autocompleteGhostText = enteredText + definitions[0].substr(enteredText.length);
+    autocompleteGhostTextElement.val(autocompleteGhostText);
+
+    textSizerElement.text(autocompleteGhostText);
   }
 };
 
 var handleKeyUp = function() {
   var element = $(this);
+  var textSizerElement = element.parent().siblings(".the-text");
   var autocompleteGhostTextElement = element.data("autocompleteGhostTextElement");
   if (autocompleteGhostTextElement == null) {
     autocompleteGhostTextElement = $("<textarea>")
@@ -49,12 +53,14 @@ var handleKeyUp = function() {
       enteredText + autocompleteGhostTextElement.val().substr(enteredText.length);
   autocompleteGhostTextElement.val(autocompleteGhostText);
 
-  var word = element.closest(".text").find(".qWordTextarea").val();
+  // TODO: Remove flash of smaller height.
+  textSizerElement.text(autocompleteGhostText);
 
+  var word = element.closest(".text").find(".qWordTextarea").val();
   getDefinitions(
     word,
     function(definitions) {
-      onGetDefinitionsSuccess(definitions, element, autocompleteGhostTextElement);
+      onGetDefinitionsSuccess(definitions, textSizerElement, element, autocompleteGhostTextElement);
     });
 };
 

@@ -1,0 +1,12 @@
+{
+  "manifest_version": 2,
+  "name": "Quizlet Auto Complete",
+  "description": "Allows you to use Quizlet's auto-define feature to autocomplete definitions.",
+  "version": "1.0",
+  "content_scripts": [
+    {
+      "matches": ["http://quizlet.com/*"],
+      "js": ["jquery-2.1.1.min.js", "injected.js"]
+    }
+  ]
+}

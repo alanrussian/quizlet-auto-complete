@@ -7,7 +7,7 @@
     {
       "matches": ["http://quizlet.com/*"],
       "css": ["injected.css"],
-      "js": ["jquery-2.1.1.min.js", "injected.js"]
+      "js": ["jquery-2.1.1.min.js", "autocomplete.js", "injected.js"]
     }
   ],
   "permissions": [

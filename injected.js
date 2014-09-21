@@ -1,22 +1,6 @@
-var DEFINITIONS_URL = "https://quizlet.com/create-set/autodefine";
-var WORD_LANGUAGE = "en";
-var DEFINITION_LANGUAGE = "en";
 var AUTOCOMPLETE_GHOST_TEXT_CLASS = "autocompleteGhostText";
 
-// TODO: Handle error.
-// TODO: Cache results.
-var getDefinitions = function(word, onSuccess) {
-  $.getJSON(
-      DEFINITIONS_URL,
-      {
-        text: word,
-        wordLang: WORD_LANGUAGE,
-        defLang: DEFINITION_LANGUAGE
-      },
-      function(data) {
-        onSuccess(data.definitions);
-      });
-};
+var autocomplete = new Autocomplete();
 
 var onGetDefinitionsSuccess = function(
     definitions,
@@ -57,7 +41,7 @@ var handleKeyUp = function() {
   textSizerElement.text(autocompleteGhostText);
 
   var word = element.closest(".text").find(".qWordTextarea").val();
-  getDefinitions(
+  autocomplete.getDefinitions(
     word,
     function(definitions) {
       onGetDefinitionsSuccess(definitions, textSizerElement, element, autocompleteGhostTextElement);

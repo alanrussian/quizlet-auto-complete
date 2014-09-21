@@ -1,0 +1,12 @@
+.autocompleteGhostText {
+  color: #999;
+  border-color: transparent;
+}
+
+.qDefTextarea {
+  background: transparent !important;
+}
+
+.autocompleteGhostText, .qDefTextarea {
+  position: absolute;
+}

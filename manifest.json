@@ -6,6 +6,7 @@
   "content_scripts": [
     {
       "matches": ["http://quizlet.com/*"],
+      "css": ["injected.css"],
       "js": ["jquery-2.1.1.min.js", "injected.js"]
     }
   ],

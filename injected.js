@@ -8,15 +8,14 @@ var onGetDefinitionsSuccess = function(
     definitionElement,
     autocompleteGhostTextElement) {
 
-  if (definitions.length) {
-    // TODO: Show relevant results.
-    // TODO: Make ghost text persist upon saving.
-    var enteredText = definitionElement.val();
-    var autocompleteGhostText = enteredText + definitions[0].substr(enteredText.length);
-    autocompleteGhostTextElement.val(autocompleteGhostText);
+  var enteredText = definitionElement.val();
+  var autocompleteMatch = definitions.findAutocompleteMatch(enteredText);
 
-    textSizerElement.text(autocompleteGhostText);
-  }
+  // TODO: Make ghost text persist upon saving.
+  var autocompleteGhostText =
+      enteredText + (autocompleteMatch == null ? "" : autocompleteMatch.substr(enteredText.length));
+  autocompleteGhostTextElement.val(autocompleteGhostText);
+  textSizerElement.text(autocompleteGhostText);
 };
 
 var handleKeyUp = function() {

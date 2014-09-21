@@ -8,7 +8,7 @@ var Autocomplete = function() {
 
   // TODO: Handle error.
   this.getDefinitions = function(word, onSuccess) {
-    var safeWord = word.trim().toLowerCase();
+    var safeWord = safenWord(word);
 
     if (wordToDefinitions.hasOwnProperty(safeWord)) {
       onSuccess(wordToDefinitions[safeWord]);
@@ -30,12 +30,49 @@ var Autocomplete = function() {
           defLang: DEFINITION_LANGUAGE
         },
         function(data) {
-          wordToDefinitions[safeWord] = data.definitions;
+          var definitions = new Definitions(data.definitions);
+          wordToDefinitions[safeWord] = definitions;
 
           var successFunction = wordToSuccessFunction[safeWord];
           delete wordToSuccessFunction[safeWord];
 
-          successFunction(data.definitions);
+          successFunction(definitions);
         });
   };
+
+  var safenWord = function(word) {
+    return word.trim().toLowerCase();
+  };
+};
+
+var Definitions = function(definitions) {
+  var safeDefinitions = [];
+
+  var init = function() {
+    for (var i = 0; i < definitions.length; i++) {
+      safeDefinitions.push(safenDefinition(definitions[i]));
+    }
+  };
+
+  this.findAutocompleteMatch = function(definitionTyped) {
+    var safeTypedDefinition = safenDefinition(definitionTyped);
+
+    // TODO: Could be more efficient (e.g., trie). Quizlet only returns about thirty definitions, so
+    // it might not be worth it.
+    for (var i = 0; i < safeDefinitions.length; i++) {
+      var safeDefinition = safeDefinitions[i];
+
+      if (safeDefinition.substr(0, definitionTyped.length) == safeTypedDefinition) {
+        return definitions[i];
+      }
+    }
+
+    return null;
+  };
+
+  var safenDefinition = function(definition) {
+    return definition.toLowerCase();
+  };
+
+  init();
 };

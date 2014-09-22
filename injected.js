@@ -18,7 +18,7 @@ var onGetDefinitionsSuccess = function(
   textSizerElement.text(autocompleteGhostText);
 };
 
-var handleKeyUp = function() {
+var updateAutocomplete = function() {
   var element = $(this);
   var textSizerElement = element.parent().siblings(".the-text");
   var autocompleteGhostTextElement = element.data("autocompleteGhostTextElement");
@@ -48,5 +48,5 @@ var handleKeyUp = function() {
 };
 
 $(function() {
-  $(".text").on("keyup", ".qDefTextarea", handleKeyUp);
+  $(".text").on("keyup focus", ".qDefTextarea", updateAutocomplete);
 });

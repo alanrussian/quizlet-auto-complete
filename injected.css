@@ -7,6 +7,15 @@
   background: transparent !important;
 }
 
-.autocompleteGhostText, .qDefTextarea {
+.autocompleteGhostText, .qDefTextarea, #termBody > .tr > .defCol > .termx {
   position: absolute;
+}
+
+#termBody > .tr > .defCol > .autocompleteInvisibleText.termx {
+  position: relative;
+  visibility: hidden;
+}
+
+#termBody > .tr > .defCol {
+  position: relative;
 }

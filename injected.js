@@ -1,4 +1,5 @@
 var AUTOCOMPLETE_GHOST_TEXT_CLASS = "autocompleteGhostText";
+var AUTOCOMPLETE_INVISIBLE_TEXT_CLASS = "autocompleteInvisibleText";
 
 var autocomplete = new Autocomplete();
 
@@ -35,13 +36,58 @@ var inlinePageControls = {
     return this.textarea.closest(".text").find(".qWordTextarea").val();
   },
 
-  adjustTextboxSizeToGhostText: function(ghostText) {
-    this.textSizerElement.text(ghostText);
+  adjustTextboxSizeToGhostText: function() {
+    this.textSizerElement.text(this.ghostTextElement.val());
   },
 
   setGhostText: function(text) {
     this.ghostTextElement.val(text);
-    this.adjustTextboxSizeToGhostText(text);
+    this.adjustTextboxSizeToGhostText();
+  },
+
+  setGhostTextVisible: function(visible) {
+    this.ghostTextElement.toggle(visible);
+  },
+
+  getText: function() {
+    return this.textarea.val();
+  },
+
+  setText: function(text) {
+    this.textarea.val(text);
+  }
+};
+
+var editPageControls = {
+  init: function() {
+    this.ghostTextElement = $("<textarea>")
+        .addClass(AUTOCOMPLETE_GHOST_TEXT_CLASS)
+        .addClass("value")
+        .addClass("termx")
+        .insertBefore(this.textarea);
+    this.invisibleTextElement = $("<textarea>")
+        .addClass(AUTOCOMPLETE_INVISIBLE_TEXT_CLASS)
+        .addClass("value")
+        .addClass("termx")
+        .insertAfter(this.textarea);
+  },
+
+  getWord: function() {
+    return this.textarea.parent().siblings(".wordCol").find("textarea").val();
+  },
+
+  adjustTextboxSizeToGhostText: function() {
+    this.invisibleTextElement.val(this.ghostTextElement.val());
+
+    var height = this.invisibleTextElement.height(0).prop("scrollHeight");
+    this.textarea.innerHeight(height);
+    this.ghostTextElement.innerHeight(height);
+    this.invisibleTextElement.innerHeight(height);
+  },
+
+  setGhostText: function(text) {
+    this.ghostTextElement.val(text);
+    this.adjustTextboxSizeToGhostText();
   },
 
   setGhostTextVisible: function(visible) {
@@ -108,4 +154,9 @@ $(function() {
         updateAutocomplete($(this), inlinePageControls);
       })
       .on("blur", ".qDefTextarea", saveAutocomplete);
+  $("#termBody > .tr > .defCol > .termx")
+      .on("keyup focus", function() {
+        updateAutocomplete($(this), editPageControls);
+      })
+      .on("blur", saveAutocomplete);
 });

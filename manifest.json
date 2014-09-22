@@ -5,7 +5,7 @@
   "version": "1.0",
   "content_scripts": [
     {
-      "matches": ["http://quizlet.com/*"],
+      "matches": ["http://quizlet.com/*", "https://quizlet.com/*"],
       "css": ["injected.css"],
       "js": ["jquery-2.1.1.min.js", "autocomplete.js", "injected.js"]
     }

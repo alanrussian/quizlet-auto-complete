@@ -145,6 +145,7 @@ var saveAutocomplete = function(pageControls) {
     return;
   }
 
+  pageControls.setGhostText(autocompleteDefinition);
   pageControls.setText(autocompleteDefinition);
 };
 

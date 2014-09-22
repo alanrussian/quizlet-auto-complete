@@ -2,71 +2,110 @@ var AUTOCOMPLETE_GHOST_TEXT_CLASS = "autocompleteGhostText";
 
 var autocomplete = new Autocomplete();
 
-var onGetDefinitionsSuccess = function(
-    definitions,
-    textSizerElement,
-    definitionElement,
-    autocompleteGhostTextElement) {
+/**
+ * Makes page controls reusable for the inline and regular editing page.
+ */
+var PageControls = function(functions, textarea) {
+  var definition;
 
-  var enteredText = definitionElement.val();
-  var autocompleteMatch = definitions.findAutocompleteMatch(enteredText);
-  autocompleteGhostTextElement.data("definition", autocompleteMatch);
+  this.textarea = $(textarea);
 
-  var autocompleteGhostText =
-      enteredText + (autocompleteMatch == null ? "" : autocompleteMatch.substr(enteredText.length));
-  autocompleteGhostTextElement.val(autocompleteGhostText);
-  textSizerElement.text(autocompleteGhostText);
+  $.extend(this, functions);
+
+  this.setDefinition = function(def) {
+    definition = def;
+  }
+
+  this.getDefinition = function() {
+    return definition;
+  }
+
+  this.init();
 };
 
-var updateAutocomplete = function() {
-  var element = $(this);
-  var textSizerElement = element.parent().siblings(".the-text");
-  var autocompleteGhostTextElement = element.data("autocompleteGhostTextElement");
-  if (autocompleteGhostTextElement == null) {
-    autocompleteGhostTextElement = $("<textarea>")
+var inlinePageControls = {
+  init: function() {
+    this.textSizerElement = this.textarea.parent().siblings(".the-text");
+    this.ghostTextElement = $("<textarea>")
         .addClass(AUTOCOMPLETE_GHOST_TEXT_CLASS)
-        .insertBefore(element);
-    element.data("autocompleteGhostTextElement", autocompleteGhostTextElement);
+        .insertBefore(this.textarea);
+  },
+
+  getWord: function() {
+    return this.textarea.closest(".text").find(".qWordTextarea").val();
+  },
+
+  adjustTextboxSizeToGhostText: function(ghostText) {
+    this.textSizerElement.text(ghostText);
+  },
+
+  setGhostText: function(text) {
+    this.ghostTextElement.val(text);
+    this.adjustTextboxSizeToGhostText(text);
+  },
+
+  setGhostTextVisible: function(visible) {
+    this.ghostTextElement.toggle(visible);
+  },
+
+  getText: function() {
+    return this.textarea.val();
+  },
+
+  setText: function(text) {
+    this.textarea.val(text);
+  }
+};
+
+var onGetDefinitionsSuccess = function(definitions, pageControls) {
+  var enteredText = pageControls.getText();
+  var autocompleteMatch = definitions.findAutocompleteMatch(enteredText);
+  pageControls.setDefinition(autocompleteMatch);
+
+  var ghostText =
+      enteredText + (autocompleteMatch == null ? "" : autocompleteMatch.substr(enteredText.length));
+  pageControls.setGhostText(ghostText);
+};
+
+var updateAutocomplete = function(element, functions) {
+  var pageControls = element.data("pageControls");
+  if (pageControls == null) {
+    pageControls = new PageControls(functions, element);
+    element.data("pageControls", pageControls);
   }
 
   // Only replace up to characters typed because otherwise text weights would be strange since ghost
   // text makes regular text bolder.
-  var enteredText = element.val();
-  var autocompleteGhostText =
-      enteredText + autocompleteGhostTextElement.val().substr(enteredText.length);
-  autocompleteGhostTextElement.val(autocompleteGhostText);
-  autocompleteGhostTextElement.show();
-
   // TODO: Remove flash of smaller height.
-  textSizerElement.text(autocompleteGhostText);
+  var enteredText = pageControls.getText();
+  var definitionText = pageControls.getDefinition();
+  var ghostText =
+      enteredText + (definitionText == null ? "" : definitionText).substr(enteredText.length);
+  pageControls.setGhostText(ghostText);
+  pageControls.setGhostTextVisible(true);
 
-  var word = element.closest(".text").find(".qWordTextarea").val();
   autocomplete.getDefinitions(
-    word,
+    pageControls.getWord(),
     function(definitions) {
-      onGetDefinitionsSuccess(definitions, textSizerElement, element, autocompleteGhostTextElement);
+      onGetDefinitionsSuccess(definitions, pageControls);
     });
 };
 
-var saveAutocomplete = function() {
-  var element = $(this);
-  var autocompleteGhostTextElement = element.data("autocompleteGhostTextElement");
-  if (autocompleteGhostTextElement == null) {
-    return;
-  }
+var saveAutocomplete = function(pageControls) {
+  var pageControls = $(this).data("pageControls");
 
-  autocompleteGhostTextElement.hide();
-
-  var autocompleteDefinition = autocompleteGhostTextElement.data("definition");
+  var autocompleteDefinition = pageControls.getDefinition();
   if (autocompleteDefinition == null) {
     return;
   }
 
-  element.val(autocompleteDefinition);
+  pageControls.setText(autocompleteDefinition);
 };
 
 $(function() {
   $(".text")
-      .on("keyup focus", ".qDefTextarea", updateAutocomplete)
+      .on("keyup focus", ".qDefTextarea", function() {
+        updateAutocomplete($(this), inlinePageControls);
+      })
       .on("blur", ".qDefTextarea", saveAutocomplete);
 });

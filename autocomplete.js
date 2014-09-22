@@ -62,7 +62,7 @@ var Definitions = function(definitions) {
     for (var i = 0; i < safeDefinitions.length; i++) {
       var safeDefinition = safeDefinitions[i];
 
-      if (safeDefinition.substr(0, definitionTyped.length) == safeTypedDefinition) {
+      if (safeDefinition.substr(0, safeTypedDefinition.length) == safeTypedDefinition) {
         return definitions[i];
       }
     }
@@ -71,7 +71,7 @@ var Definitions = function(definitions) {
   };
 
   var safenDefinition = function(definition) {
-    return definition.toLowerCase();
+    return definition.toLowerCase().replace(/[^\w ]/g, '');
   };
 
   init();

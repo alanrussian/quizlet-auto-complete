@@ -11,6 +11,6 @@
     }
   ],
   "permissions": [
-    "https://quizlet.com/*" // For autocomplete.
+    "https://quizlet.com/*"
   ]
 }

@@ -10,8 +10,8 @@ var onGetDefinitionsSuccess = function(
 
   var enteredText = definitionElement.val();
   var autocompleteMatch = definitions.findAutocompleteMatch(enteredText);
+  autocompleteGhostTextElement.data("definition", autocompleteMatch);
 
-  // TODO: Make ghost text persist upon saving.
   var autocompleteGhostText =
       enteredText + (autocompleteMatch == null ? "" : autocompleteMatch.substr(enteredText.length));
   autocompleteGhostTextElement.val(autocompleteGhostText);
@@ -35,6 +35,7 @@ var updateAutocomplete = function() {
   var autocompleteGhostText =
       enteredText + autocompleteGhostTextElement.val().substr(enteredText.length);
   autocompleteGhostTextElement.val(autocompleteGhostText);
+  autocompleteGhostTextElement.show();
 
   // TODO: Remove flash of smaller height.
   textSizerElement.text(autocompleteGhostText);
@@ -47,6 +48,25 @@ var updateAutocomplete = function() {
     });
 };
 
+var saveAutocomplete = function() {
+  var element = $(this);
+  var autocompleteGhostTextElement = element.data("autocompleteGhostTextElement");
+  if (autocompleteGhostTextElement == null) {
+    return;
+  }
+
+  autocompleteGhostTextElement.hide();
+
+  var autocompleteDefinition = autocompleteGhostTextElement.data("definition");
+  if (autocompleteDefinition == null) {
+    return;
+  }
+
+  element.val(autocompleteDefinition);
+};
+
 $(function() {
-  $(".text").on("keyup focus", ".qDefTextarea", updateAutocomplete);
+  $(".text")
+      .on("keyup focus", ".qDefTextarea", updateAutocomplete)
+      .on("blur", ".qDefTextarea", saveAutocomplete);
 });

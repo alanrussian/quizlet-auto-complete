@@ -7,11 +7,15 @@
   background: transparent !important;
 }
 
-.autocompleteGhostText, .qDefTextarea, #termBody > .tr > .defCol > .termx {
+.autocompleteGhostText,
+.qDefTextarea,
+#termBody > .tr > .defCol > .termx,
+.TermContent-side--definition .AutoExpandTextarea-textarea {
   position: absolute;
 }
 
-#termBody > .tr > .defCol > .autocompleteInvisibleText.termx {
+#termBody > .tr > .defCol > .autocompleteInvisibleText.termx,
+.AutoExpandTextarea-textarea.autocompleteInvisibleText {
   position: relative;
   visibility: hidden;
 }
@@ -19,3 +23,4 @@
 #termBody > .tr > .defCol {
   position: relative;
 }
+

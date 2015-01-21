@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Quizlet Auto Complete",
   "description": "Allows you to use Quizlet's auto-define feature to autocomplete definitions.",
-  "version": "1.0",
+  "version": "1.1",
   "content_scripts": [
     {
       "matches": ["http://quizlet.com/*", "https://quizlet.com/*"],
